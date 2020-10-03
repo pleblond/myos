@@ -5,7 +5,6 @@
 #![no_main]
 
 extern crate alloc;
-extern crate rlibc;
 
 use alloc::{boxed::Box, vec::Vec};  //rc::Rc, vec,
 
