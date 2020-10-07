@@ -28,6 +28,9 @@ pub extern "C" fn _start(boot_info: &'static BootInfo) -> ! {
     println!("Initializing Frame Allocator...");
     memory::FrameAllocator::init(boot_info);
 
+    println!("Initializing Paging...");
+    let mut mapper = paging::Mapper::new();
+
     println!("Initializing Heap Allocator...");
     heap::HeapAllocator::init();
 

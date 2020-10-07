@@ -1,5 +1,7 @@
+mod mapper;
 
 #[derive(Clone, Copy)]
+pub use mapper::Mapper;
 pub struct PhysAddr(pub u64);
 
 #[derive(Clone, Copy)]
