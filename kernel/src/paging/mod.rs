@@ -23,7 +23,7 @@ impl PageTableEntry {
     }
 
     pub const fn is_huge(&self) -> bool {
-        (self.entry & 0xb10000000) != 0
+        (self.entry & 0x80) != 0
     }
 }
 
