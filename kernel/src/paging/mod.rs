@@ -1,5 +1,3 @@
-use bitflags::bitflags;
-use core::fmt;
 
 #[derive(Clone, Copy)]
 pub struct PhysAddr(pub u64);
