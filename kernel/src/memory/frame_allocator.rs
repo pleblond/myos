@@ -1,3 +1,4 @@
+use core::ptr;
 use bootloader::BootInfo;
 use bootloader::bootinfo::MemoryRegionType::Usable;
 
@@ -49,6 +50,7 @@ impl FrameAllocator {
         for range in unsafe { gFRAME_ALLOCATOR.ranges.iter_mut() } {
             if range.0 < range.1 {
                 let address = range.0 << 12;
+                unsafe { ptr::write_bytes((0x18000000000+address) as *mut u64, 0, 4096>>3); }
                 range.0 += 1;
                 return Some(address);
             }
