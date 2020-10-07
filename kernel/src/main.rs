@@ -15,6 +15,7 @@ mod cpu;
 mod console;
 mod ktty;
 mod paging;
+mod memory;
 mod heap;
 
 #[no_mangle]
@@ -23,6 +24,9 @@ pub extern "C" fn _start(boot_info: &'static BootInfo) -> ! {
     println!("\n============== BOOTINFO ================\n");
     println!("DUMP {:#?}", boot_info);
     println!("\n========================================\n");
+
+    println!("Initializing Frame Allocator...");
+    memory::FrameAllocator::init(boot_info);
 
     println!("Initializing Heap Allocator...");
     heap::HeapAllocator::init();
