@@ -1,11 +1,11 @@
-mod mapper;
-
-#[derive(Clone, Copy)]
+pub mod mapper;
 pub use mapper::Mapper;
-pub struct PhysAddr(pub u64);
 
-#[derive(Clone, Copy)]
-pub struct VirtAddr(pub u64);
+#[derive(Debug, Clone, Copy)]
+pub struct PhysicalAddress(pub u64);
+
+#[derive(Debug, Clone, Copy)]
+pub struct VirtualAddress(pub u64);
 
 #[repr(align(4096))]
 #[repr(C)]
@@ -20,8 +20,8 @@ pub struct PageTableEntry {
 
 impl PageTableEntry {
 
-    pub const fn address(&self) -> PhysAddr {
-        PhysAddr(self.entry & 0x000fffff_fffff000)
+    pub const fn address(&self) -> PhysicalAddress {
+        PhysicalAddress(self.entry & 0x000fffff_fffff000)
     }
 
     pub const fn is_huge(&self) -> bool {
@@ -33,7 +33,7 @@ impl PageTableEntry {
 //
 //
 //============================================================
-pub fn translate_addr(address: VirtAddr) -> Option<PhysAddr> {
+pub fn translate_addr(address: VirtualAddress) -> Option<PhysicalAddress> {
 
     let index4 = (address.0 & 0x0000FF8000000000) >> 39;
     let index3 = (address.0 & 0x0000007FC0000000) >> 30;
@@ -57,12 +57,12 @@ pub fn translate_addr(address: VirtAddr) -> Option<PhysAddr> {
     if entry.entry==0 { return None; }
 
     if entry.is_huge() {
-        return Some(PhysAddr(entry.address().0 + (index1<<12) + index0))
+        return Some(PhysicalAddress(entry.address().0 + (index1<<12) + index0))
     }
 
     let table = unsafe { &(*((0x18000000000 + entry.address().0) as *const PageTable)) };
     let entry = &table.entries[index1 as usize];
     if entry.entry==0 { return None; }
 
-    Some(PhysAddr(entry.address().0 + index0))
+    Some(PhysicalAddress(entry.address().0 + index0))
 }
