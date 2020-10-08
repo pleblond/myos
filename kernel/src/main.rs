@@ -1,6 +1,7 @@
 #![feature(llvm_asm)]
 #![feature(alloc_error_handler)] // at the top of the file
 #![feature(const_fn)]
+#![feature(abi_x86_interrupt)]
 #![no_std]
 #![no_main]
 
@@ -13,6 +14,7 @@ use bootloader::BootInfo;
 
 mod cpu;
 mod console;
+mod interrupts;
 mod ktty;
 mod paging;
 mod memory;
