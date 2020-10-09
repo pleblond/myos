@@ -1,6 +1,8 @@
 #![feature(llvm_asm)]
 #![feature(alloc_error_handler)] // at the top of the file
 #![feature(const_fn)]
+#![feature(const_fn_fn_ptr_basics)]
+#![feature(const_mut_refs)]
 #![feature(abi_x86_interrupt)]
 #![no_std]
 #![no_main]
@@ -27,6 +29,11 @@ pub extern "C" fn _start(boot_info: &'static BootInfo) -> ! {
     println!("DUMP {:#?}", boot_info);
     println!("\n========================================\n");
 
+    println!("Loading IDT...");
+    interrupts::initialize();
+    println!("Loading GDT (replacing trampoline)...");
+    cpu::gdt::init();
+
     println!("Initializing Frame Allocator...");
     memory::FrameAllocator::init(boot_info);
 
@@ -36,9 +43,9 @@ pub extern "C" fn _start(boot_info: &'static BootInfo) -> ! {
     println!("Initializing Heap Allocator...");
     heap::HeapAllocator::init();
 
-    println!("Loading GDT (replacing trampoline)...");
-    cpu::gdt::init();
-    println!("Loading GDT... SURVIVED!");
+    println!("\nTesting int3...\n");
+    unsafe { llvm_asm!("int3"); }
+    println!("Testing int3... SURVIVED!");
 
     println!("\nBYE...");
 
