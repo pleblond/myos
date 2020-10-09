@@ -1,10 +1,11 @@
+use core::fmt;
 pub mod mapper;
 pub use mapper::Mapper;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct PhysicalAddress(pub u64);
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct VirtualAddress(pub u64);
 
 #[repr(align(4096))]
@@ -65,4 +66,16 @@ pub fn translate_addr(address: VirtualAddress) -> Option<PhysicalAddress> {
     if entry.entry==0 { return None; }
 
     Some(PhysicalAddress(entry.address().0 + index0))
+}
+
+impl fmt::Debug for VirtualAddress {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "VirtualAddress({:#x})", self.0)
+    }
+}
+
+impl fmt::Debug for PhysicalAddress {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "PhysicalAddress({:#x})", self.0)
+    }
 }
